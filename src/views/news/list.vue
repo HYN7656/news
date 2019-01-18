@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="list" v-bind:style="{ minHeight: offHeight + 'px' }">
     <br>
     <div class="contain">
       <ul class="current_position">
@@ -64,6 +64,7 @@
       },
       methods: {
         getPage(){
+          this.heightCen();
           let params = {};
           params['page'] = this.currentPage;
           params['count'] = this.pageSize;
@@ -101,6 +102,12 @@
           this.getPage()
           console.log(val);
         },
+        heightCen(){
+          let hei = document.documentElement.clientHeight-410;
+          console.log(hei)
+          this.offHeight = hei;
+          console.log(this.offHeight)
+        }
       },
       created() {
         this.getPage()

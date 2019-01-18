@@ -123,6 +123,7 @@
       },
       // 页面初始化
       getPage(){
+        this.heightCen()
         // 分类
         let params = {};
         params['type'] = 1;

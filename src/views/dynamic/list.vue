@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="list" v-bind:style="{ minHeight: offHeight + 'px' }">
     <br>
     <div class="contain">
       <ul class="current_position">
@@ -78,6 +78,7 @@
     },
     methods: {
       getPage(){
+        this.heightCen();
         let params1 = {};
         params1['id'] = 123;
         API.get('static/news.json', params1).then((res) => {
@@ -128,6 +129,12 @@
         this.month=month+'月';
         this.day=day;
         this.week=week;
+      },
+      heightCen(){
+        let hei = document.documentElement.clientHeight-410;
+        // console.log(hei)
+        this.offHeight = hei;
+        // console.log(this.offHeight)
       }
     },
     mounted: function () {
