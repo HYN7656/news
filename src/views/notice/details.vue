@@ -4,7 +4,7 @@
     <div class="contain">
       <ul class="current_position">
         <li>当前位置：</li>
-        <li><router-link :to="{name:'backstage.news'}">公告管理</router-link></li>
+        <li><router-link :to="{name:'noticeList'}">公告管理</router-link></li>
         <li>&nbsp;&nbsp;<i class="icon iconfont icon-youjiantou"></i>&nbsp;&nbsp;&nbsp;</li>
         <li><a href="javascript:;">详情</a></li>
       </ul>
@@ -32,7 +32,7 @@
       </div>
       <br/><br/>
       <div class="down_res" v-for="i in file">
-        <a :href="i.fenclUrl" style="color: #df6657;text-align: left;" >{{i.fenclName}}</a>
+        <a :href="i.url" style="color: #df6657;text-align: left;" >{{i.fenclName}}</a>
       </div>
       <br/><br/><br/>
     </div>
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+  import config from "@/config/config.js";
     export default {
         //name: "details.vue"
       data(){
@@ -58,6 +59,9 @@
             if(res.data.code == 200) {
               this.datail = res.data.data.data;
               this.file = res.data.data.file
+              for (var i = 0; i < this.file.length; i++) {
+                this.file[i].url = config.baseURL + this.file[i].fenclUrl;
+              }
             }
           })
           console.log(this.$route.query.id)

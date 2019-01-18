@@ -82,12 +82,12 @@
     methods: {
       // 翻页器：当前页，同时上一页下一页也能获取当前页
       handleCurrentChange(val) {
-        console.log(val);
+        // console.log(val);
         this.pageSize = val;
       },
       // 翻页器：选择10条还是20条、
       handleSizeChange(val) {
-        console.log(val);
+        // console.log(val);
         this.currentPage = val;
       },
       // 时间
@@ -125,8 +125,9 @@
       getPage(){
         // 分类
         let params = {};
-        API.get('/ification/FindAll', params).then((res) => {
-          console.log(res.data)
+        params['type'] = 1;
+        API.get('/ification/findByType', params).then((res) => {
+          // console.log(res.data)
           if (res.data.code == 200) {
             this.typeList = res.data.data;
 
@@ -138,7 +139,7 @@
             params2['count'] = this.pageSize;
             params2['Iid'] = this.typeList[0].id;
             API.get('/notice/FindByIid', params2).then((res) => {
-              console.log(res.data)
+              // console.log(res.data)
               if (res.data.code == 200) {
                 this.contentList = res.data.data;
                 this.total = res.data.count;
@@ -147,7 +148,7 @@
                 }else {
                   this.pag = false
                 }
-                console.log(this.contentList);
+                // console.log(this.contentList);
               } else {
                 console.log(res.data)
               }
@@ -166,14 +167,14 @@
       switcher(id){
         this.heightCen();
         this.isActive = id;
-        console.log(this.isActive)
+        // console.log(this.isActive)
         let params = {};
         params['Iid'] = id;
         params['page'] = this.currentPage;
         params['count'] = this.pageSize;
-        console.log(params)
+        // console.log(params)
         API.get('/notice/FindByIid', params).then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           if (res.data.code == 200) {
             this.contentList = res.data.data;
             this.total = res.data.count;
@@ -182,7 +183,7 @@
             }else {
               this.pag = false
             }
-            console.log(this.contentList);
+            // console.log(this.contentList);
           } else {
             console.log(res.data)
           }
@@ -190,9 +191,9 @@
       },
       heightCen(){
         let hei = document.documentElement.clientHeight-410;
-        console.log(hei)
+        // console.log(hei)
         this.offHeight = hei;
-        console.log(this.offHeight)
+        // console.log(this.offHeight)
       }
     },
     mounted: function () {

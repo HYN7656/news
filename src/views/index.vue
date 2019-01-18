@@ -27,8 +27,7 @@
           <div class="tab-content">
             <div class="item" :class="{active:isActive == 1}">
               <div class="list" v-for="i in newsShow" :key="i.id" @click="newsGo(i.id)">
-                <img :src="i.fImgUrl" alt class="img" v-if="i.fImgUrl">
-                <img src="../assets/news.jpg" alt class="img" v-else>
+                <img :src="i.url" alt class="img">
                 <div class="title" :class="i.fTop == 1 ? Red : Black">{{i.fTitle}}</div>
                 <div class="article">{{i.fContents}}</div>
                 <div class="time">发布时间：{{i.fReleaseTime}}</div>
@@ -62,38 +61,6 @@
               <i :class="item.class" ></i>
               <p class="name">{{key}}</p>
             </div>
-            <!-- <div class="cell" :class="{Boxactive:boxShadow=='换季管理'}" @click="subsystem('换季管理')">
-              <i class="icon iconfont icon-ji"></i>
-              <p class="name">换季管理</p>
-            </div>
-            <div class="cell" :class="{Boxactive:boxShadow=='月度管理'}" @click="subsystem('月度管理')">
-              <i class="icon iconfont icon-tongji1"></i>
-              <p class="name">月度管理</p>
-            </div>
-            <div class="cell" :class="{Boxactive:boxShadow=='区内管理'}" @click="subsystem('区内管理')">
-              <i class="icon iconfont icon-tongji"></i>
-              <p class="name">区内管理</p>
-            </div>
-            <div class="cell" :class="{Boxactive:boxShadow=='飞行程序'}" @click="subsystem('飞行程序')">
-              <i class="icon iconfont icon-flightSchedule"></i>
-              <p class="name">飞行程序</p>
-            </div>
-            <div class="cell" :class="{Boxactive:boxShadow=='临时航线'}" @click="subsystem('临时航线')">
-              <div class="mask">
-                <i class="icon iconfont icon-hangxian"></i>
-              </div>
-              <p class="name">临时航线</p>
-            </div>
-            <div
-              class="cell"
-              :class="{Boxactive:boxShadow=='ARINC424'}"
-              @click="subsystem('ARINC424')"
-            >
-              <div class="mask">
-                <i class="icon iconfont icon-feihangxiaoshi"></i>
-              </div>
-              <p class="name">ARINC424</p>
-            </div>-->
           </div>
           <div class="input-table loginTab">
             <div class="cell">
@@ -395,8 +362,11 @@ export default {
       var arr = [];
       var num = 0;
       API.get("/newsInfo/FindAllByrelease", params).then(res => {
-        //console.log(res.data)
+        console.log(res.data)
         if (res.data.code == 200) {
+          for(var i=0;i<res.data.data.length;i++){
+            res.data.data[i].url = config.baseURL + res.data.data[i].fImgUrl;
+          }
           if (res.data.data.length <= 3) {
             this.newsShow = res.data.data;
           } else {
@@ -424,7 +394,7 @@ export default {
       let params = {};
       var arr = [];
       var num = 0;
-      API.get("/newsInfo/FindAllByrelease", params).then(res => {
+      API.get("/newsInfo/FindAllByrelease1", params).then(res => {
         //console.log(res.data)
         if (res.data.code == 200) {
           if (res.data.data.length <= 4) {
@@ -494,7 +464,7 @@ export default {
     },
     // 进入子系统
     subsystem(flag) {
-      // alert(flag)
+      //alert(flag)
       this.boxShadow = flag;
       let menus = this.indexMenus;
       //遍历从后台拿到的子系统ID 赋值
@@ -533,11 +503,11 @@ export default {
           params["MenuId"] = this.subSys;
           params["uName"] = this.userName;
           params["uPasswd"] = md5(this.userName + this.passWord);
-          console.log(params);
+          // console.log(params);
           // this.loginSubsystem("res.data.dat");
           API.post(config.loginURL + "/user/ReceptionLogin", params).then(
             res => {
-              console.log(res.data)
+              // console.log(res.data)
               if (res.data.code == 200) {
                 //登录成功后 执行跳转，把数据传过去
                 this.loginSubsystem(res.data.data);
@@ -595,7 +565,7 @@ export default {
       params["type"] = 2;
       //console.log(params)
       API.get(config.loginURL + "/code/userVerificationCode", params).then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         if (res.data.code == 200) {
           this.$message({
             type: "success",
@@ -618,9 +588,9 @@ export default {
       params["MenuId"] = this.subSys;
       params["uName"] = this.userName;
       params["uPasswd"] = md5(this.userName + this.passWord);
-      console.log(params)
+      // console.log(params)
       API.post(config.loginURL + "/user/ReceptionLogin", params).then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         if (res.data.code == 200) {
           //登录成功后 执行跳转，把数据传过去
           this.loginSubsystem(res.data.data);
@@ -685,9 +655,9 @@ export default {
         // 验证码
         params["phone"] = this.phoLog.phone;
         params["type"] = 2;
-        console.log(params)
+        // console.log(params)
         API.get(config.loginURL + "/code/verificationCode", params).then(res => {
-          console.log(res.data)
+          // console.log(res.data)
           if (res.data.code == 200) {
             this.$message({
               type: "success",
@@ -720,10 +690,10 @@ export default {
         params["MenuId"] = this.subSys;
         params["code"] = this.phoLog.code;
         params["phone"] = this.phoLog.phone;
-        console.log(params)
+        // console.log(params)
         API.post(config.loginURL + "/user/ReceptionLogin", params).then(
           res => {
-            console.log(res.data)
+            // console.log(res.data)
             if (res.data.code == 200) {
               //登录成功后 执行跳转，把数据传过去
               this.loginSubsystem(res.data.data);
@@ -921,9 +891,9 @@ export default {
         .then(response => {
           if (response.data.code == 200) {
             this.indexMenus = response.data.data;
-            console.log(this.indexMenus)
+            // console.log(this.indexMenus)
           } else {
-            console.log(response);
+            // console.log(response);
             this.$message({
               type: "error",
               message: "子系统菜单查询错误：" + response.data.message
@@ -931,7 +901,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error.response);
+          // console.log(error.response);
           this.$message({
             type: "error",
             message: "服务器异常"

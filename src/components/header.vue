@@ -11,10 +11,10 @@
         <div class="logo"><img src="./../assets/logo.png" alt="" class="img"></div>
         <ul class="nav">
           <li class="cell" :class="{active: $route.name == 'home'}"><router-link :to="{name:'home'}" class="link"><span class="word">首页</span></router-link></li>
-          <li class="cell planning" :class="{active: $route.name == 'planning'}"><router-link :to="{name:'planning'}" class="link"><span class="word">空域规划</span></router-link></li>
-          <li class="cell manage" :class="{active: $route.name == 'manage'}"><router-link :to="{name:'manage'}" class="link"><span class="word">空域管理</span></router-link></li>
-          <li class="cell design" :class="{active: $route.name == 'design'}"><router-link :to="{name:'design'}" class="link"><span class="word">程序设计</span></router-link></li>
-          <li class="cell reduce" :class="{active: $route.name == 'reduce'}"><router-link  :to="{name:'reduce'}" class="link"><span class="word">节能减排</span></router-link></li>
+          <li class="cell planning" :class="{active: $route.name == 'planList'}"><router-link :to="{name:'planList'}" class="link"><span class="word">空域规划</span></router-link></li>
+          <li class="cell manage" :class="{active: $route.name == 'manageList'}"><router-link :to="{name:'manageList'}" class="link"><span class="word">空域管理</span></router-link></li>
+          <li class="cell design" :class="{active: $route.name == 'designList'}"><router-link :to="{name:'designList'}" class="link"><span class="word">程序设计</span></router-link></li>
+          <li class="cell reduce" :class="{active: $route.name == 'energyList'}"><router-link  :to="{name:'energyList'}" class="link"><span class="word">节能减排</span></router-link></li>
           <li class="cell contact" :class="{active: $route.name == 'contact'}"><a class="link" style="cursor: pointer" @click="lxwm"><span class="word">联系我们</span></a></li>
           <!--<li class="cell contact" :class="{active: $route.name == 'contact'}"><router-link :to="{name:'contact'}" class="link"><span class="word">联系我们</span></router-link></li>-->
         </ul>
@@ -26,7 +26,7 @@
       width="30%"
       center>
       <p class="hea-p">E-MAIL：WEBMASTER@ATMB.NET.CN</p>
-      <p class="hea-p">京顺义区空港街道天柱路23号空域管理中心</p>
+      <p class="hea-p">北京顺义区空港街道天柱路23号空域管理中心</p>
     </el-dialog>
   </div>
 </template>

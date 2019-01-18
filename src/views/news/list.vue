@@ -13,11 +13,10 @@
     <div class="title_hr"></div>
     <div class="contentList">
       <div v-for="(item,index) in newsList" :key="item.id" @click="newsGo(item.id)">
-        <div class="news_img">
-          <img :src="item.fImgUrl" style="width: 240px;" v-if="item.fImgUrl"/>
-          <img src="../../assets/images/news.jpg" style="width: 240px;" v-else/>
+        <div class="news_img" style="cursor: pointer">
+          <img :src="item.url" style="width: 240px;"/>
         </div>
-        <ul class="content" style="height: 200px">
+        <ul class="content" style="height: 200px;cursor: pointer">
           <li class="title"><a :class="item.fTop == 1 ? Red : Black">{{item.fTitle}}</a></li>
           <li class="contents"><a>{{item.fContents}}</a></li>
           <li class="time">{{item.fReleaseTime}}</li>
@@ -42,6 +41,7 @@
 </template>
 
 <script>
+  import config from "@/config/config.js";
   import Vue from 'vue'
   import {Table,TableColumn,Pagination} from 'element-ui';
   import VueResource from 'vue-resource'
@@ -70,7 +70,11 @@
           API.get('/newsInfo/FindAllByrelease', params).then((res) => {
             console.log(res.data)
             if (res.data.code  == 200) {
+              for(var i=0;i<res.data.data.length;i++){
+                res.data.data[i].url = config.baseURL + res.data.data[i].fImgUrl
+              }
               this.newsList = res.data.data;
+
               this.total = res.data.count;
               if(this.total>0){
                 this.pag = true
