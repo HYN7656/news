@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-bind:style="{ minHeight: offHeight + 'px' }">
     <br>
     <div class="contain">
       <ul class="current_position">
@@ -53,6 +53,7 @@
       },
       methods:{
         getPage(){
+          this.heightCen();
           console.log(this.$route.query.id)
           let params = {};
           params['id'] = this.$route.query.id;
@@ -65,6 +66,12 @@
               console.log(res.data)
             }
           })
+        },
+        heightCen(){
+          let hei = document.documentElement.clientHeight-410;
+          console.log(hei)
+          this.offHeight = hei;
+          console.log(this.offHeight)
         }
       },
       created(){

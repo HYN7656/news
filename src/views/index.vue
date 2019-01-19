@@ -14,10 +14,10 @@
                 <i class="newsts" v-show="newS"></i>
               </span>
             </div>
-            <div class="item newst" :class="{active:isActive == 2}" @click="newsTab(2)">
+            <!--<div class="item newst" :class="{active:isActive == 2}" @click="newsTab(2)">
               动态
               <i class="newsts" v-show="dynamicS"></i>
-            </div>
+            </div>-->
             <div class="item newst" :class="{active:isActive == 3}" @click="newsTab(3)">
               公告
               <i class="newsts" v-show="noticeS"></i>
@@ -374,18 +374,17 @@ export default {
               arr.push(res.data.data[i]);
             }
             this.newsShow = arr;
-            for (var i = 0; i < this.newsShow.length; i++) {
-              if (this.newsShow[i].fTop == 1) {
-                num++;
-              }
+          }
+          for (var i = 0; i < this.newsShow.length; i++) {
+            if (this.newsShow[i].fTop == 1) {
+              num++;
             }
-            if (num > 0) {
-              this.newS = true;
-            }
-            //console.log(this.newsShow);
+          }
+          if (num > 0) {
+            this.newS = true;
           }
         } else {
-          //console.log(res.data)
+          console.log(res.data)
         }
       });
     },

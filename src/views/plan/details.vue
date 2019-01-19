@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-bind:style="{ minHeight: offHeight + 'px' }">
     <br>
     <div class="contain">
       <ul class="current_position">
@@ -45,7 +45,8 @@
     data(){
       return{
         datail:{},
-        file : []
+        file : [],
+        offHeight : 0
       }
     },
     mounted: function () {
@@ -53,6 +54,7 @@
     },
     methods: {
       getDetail() {
+        this.heightCen();
         let params = {};
         params['id'] = this.$route.query.id;
         API.get('/plan/FindById', params).then((res) => {
@@ -67,6 +69,12 @@
           }
         })
         console.log(this.$route.query.id)
+      },
+      heightCen(){
+        let hei = document.documentElement.clientHeight-410;
+        console.log(hei)
+        this.offHeight = hei;
+        console.log(this.offHeight)
       }
     }
   }

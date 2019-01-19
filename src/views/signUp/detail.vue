@@ -20,10 +20,10 @@
         </div>
         <div class="inner-c detail-table">
             <div class="info">
-                <div class="img"><img class="ewm pic" :src="datail.mQrcodeUrl"></div>
+                <div class="img"><img class="ewm pic" :src="datail.url"></div>
                 <div class="detail">
                     <div class="title">{{datail.mName}}</div>
-                    <div class="time"><i class="icon iconfont icon-shijian"></i>{{datail.mStartTime}} -- {{datail.mEndTime}}</div>
+                    <div class="time"><i class="icon iconfont icon-shijian"></i>{{datail.startTime}} -- {{datail.endTime}}</div>
                     <div class="address"><i class="icon iconfont icon-dingweiweizhi"></i>{{datail.mAddress}}</div>
                     <div class="btn"><router-link :to="{path:'/form',query:{id:datail.id}}">在线报名</router-link></div>
                     <div class="wechart">
@@ -79,7 +79,7 @@
                   <div class="title">会议日程</div>
                   <div class="ql-editor" v-html="datail.mContent" style="color: #666"></div>
                   <div v-for="i in file" class="uploadBox">
-                    <a :href="i.fenclUrl" class="upload">{{i.fenclName}}</a>
+                    <a :href="i.url" class="upload">{{i.fenclName}}</a>
                   </div>
                 </div>
                 <!--备注-->
@@ -95,6 +95,7 @@
 </template>
 
 <script>
+  import config from "@/config/config.js";
   export default {
     data () {
       return {
@@ -114,7 +115,8 @@
         partakeCompany: [],
         file: [],
         active: 1,
-        formLabelWidth: '120px'
+        formLabelWidth: '120px',
+        startTime : ''
       }
     },
     methods:{
@@ -127,8 +129,17 @@
         API.get('/meeTing/FindById', params).then((res) => {
           console.log(res.data)
           if(res.data.code == 200) {
-            this.datail = res.data.data.data;
+            // this.datail = res.data.data.data;
+            this.datail.url = config.baseURL + res.data.data.data.mQrcodeUrl;
             this.file = res.data.data.file;
+            for(var i=0;i<this.file.length;i++){
+              this.file[i].url = config.baseURL + this.file[i].fenclUrl;
+            }
+            var arr = Object.assign({}, res.data.data.data);
+            arr.startTime = arr.mStartTime.slice(0,19)
+            arr.endTime = arr.mEndTime.slice(0,19)
+            this.datail = arr;
+            console.log(arr)
             this.partakeHost = res.data.data.data.mHostUnit.split(',');
             this.partakeCompany = res.data.data.data.mParticipatingUnits.split(',');
           }

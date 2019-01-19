@@ -1,15 +1,15 @@
 <template>
-    <div class="sign-list">
+    <div class="sign-list" v-bind:style="{ minHeight: offHeight + 'px' }">
         <div class="banner">
             <img src="./../../assets/images/banner.png" alt="" class="img">
         </div>
         <div class="list-content inner-c" >
             <router-link :to="{path:'/sign/detail',query:{id:i.id}}" class="cell" v-for="i in meetingList" :key="i.id">
                 <!--<div class="img-box"><img src="./../../assets/images/erwm.png" class="img"></div>-->
-                <div class="img-box"><img :src="i.mqrcodeUrl" class="img" style="width:260px;height:260px;"></div>
+                <div class="img-box"><img :src="i.url" class="img" style="width:260px;height:260px;"></div>
                 <div class="detail">
                     <div class="title">{{i.mname}}</div>
-                    <div class="time"><i class="icon iconfont icon-shijian"></i>{{i.mstartTime}} -- {{i.mendTime}}</div>
+                    <div class="time"><i class="icon iconfont icon-shijian"></i>{{i.startTime}} -- {{i.endTime}}</div>
                     <div class="address"><i class="icon iconfont icon-dingweiweizhi"></i>{{i.maddress}}</div>
                 </div>
             </router-link>
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+  import config from "@/config/config.js";
   export default {
     data () {
       return {
@@ -26,16 +27,29 @@
     },
     methods:{
       getPage(){
+        this.heightCen();
         let params1 = {};
         params1['id'] = 123;
         API.get('/meeTing/FindAllByrelease', params1).then((res) => {
           console.log(res.data)
           if (res.data.code == 200) {
-            this.meetingList = res.data.data;
+            var arr = res.data.data;
+            for(var i=0;i<arr.length;i++){
+              arr[i].startTime = arr[i].mstartTime.slice(0,19)
+              arr[i].endTime = arr[i].mendTime.slice(0,19)
+              arr[i].url = config.baseURL +arr[i].mqrcodeUrl
+            }
+            this.meetingList = arr;
           } else {
             console.log(res.data)
           }
         })
+      },
+      heightCen(){
+        let hei = document.documentElement.clientHeight-410;
+        console.log(hei)
+        this.offHeight = hei;
+        console.log(this.offHeight)
       }
 
     },

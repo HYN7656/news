@@ -2,20 +2,23 @@
   <div class="list" v-bind:style="{ minHeight: offHeight + 'px' }">
     <br/><br/>
     <div class="contain">
-      <div>
-        <span class="plan">节能减排</span><span class="current_plan">{{currentPlanName}}</span>
+      <div style="float: left;width: 230px;">
+        <span class="plan">节能减排</span>
+      </div>
+      <div style="overflow: hidden;text-align: left;">
+        <span class="current_plan">{{currentPlanName}}</span>
       </div>
       <br/><br/>
       <ul class="current_banner">
-        <li v-for="i in typeList" :key="i.id" class="liStyle"><a @click="switcher(i.id,i.iName)" class="banner_color" :class="{active:isActive == i.id}">{{i.iName}}  <i class="icon iconfont icon-paly icon-postion"></i></a></li>
+        <li v-for="i in typeList" :key="i.id" class="liStyle"><a @click="switcher(i.id,i.iName)" class="banner_color" :class="{active:isActive == i.id}">{{i.name}}  <i class="icon iconfont icon-paly icon-postion"></i></a></li>
       </ul>
       <div class="contentList" :class="{active:isActive == this.isActive}">
         <div v-for="(item,index) in list">
           <div class="content-hr"></div>
           <br/><br/><br/>
-          <ul class="content">
-            <li class="title"><router-link :to="{path:'/energy/details',query:{id:item.id}}">{{item.title}}</router-link></li>
-            <li class="limitC contents"><a href="javascript:;"  @click="showContent(item,index)">{{item.contents}}</a></li>
+          <ul class="content" @click="EdtailsGo(item.id)">
+            <li class="title"><a :class="item.top == 1 ? Red : Black">{{item.title}}</a></li>
+            <li class="limitC contents">{{item.contents}}</li>
             <li class="time">{{item.releaseTime }}</li>
             <li><br/></li>
           </ul>
@@ -69,38 +72,28 @@
         meetingNoticeList:[],
         isActive:1,
 
-        contentHidden: true
+        contentHidden: true,
+        Red : 'Red',
+        Black : 'Black',
       }
     },
     methods: {
-      // 请求分类
-      /*classify() {
-        let params = {};
-        params['type'] = 2;
-        API.get('/ification/findByType', params).then((res) => {
-          console.log(res.data)
-          if(res.data.code == 200){
-            this.typeList = res.data.data;
-            this.currentPlanName = this.typeList[0].iName;
-          }
-          // console.log(this.typeList)
-        })
-      },*/
       getPage(){
         let params = {};
         params['type'] = 5;
         API.get('/ification/findByType', params).then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           if(res.data.code == 200){
-            this.typeList = res.data.data;
+            var arr = [];
+            this.typeList = arr.concat(res.data.data)
+            for(var i=0;i<this.typeList.length;i++){
+              this.typeList[i].name = this.typeList[i].iName.slice(0,10);
+            }
             this.currentPlanName = this.typeList[0].iName;
             this.switcher(this.typeList[0].id,this.typeList[0].iName)
+            console.log(this.typeList)
           }
-          // console.log(this.typeList)
         })
-        console.log(this.typeList)
-
-
       },
       handleSizeChange(val) {
         this.pageSize = val;
@@ -117,9 +110,9 @@
         params['iId'] = id;
         params['page'] = this.currentPage;
         params['count'] = this.pageSize;
-        console.log(params)
+        // console.log(params)
         API.get('/energy/findAllByrelease', params).then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           if (res.data.code == 200) {
             this.list = res.data.data;
             this.total = res.data.count;
@@ -134,19 +127,14 @@
           }
         })
       },
-      showContent(item, index) {
-        if (item.show){
-          item.show=false;
-        }else{
-          item.show=true;
-        }
-
+      EdtailsGo(id){
+        this.$router.push({name:'energyDetails',query:{id:id}})
       },
       heightCen(){
         let hei = document.documentElement.clientHeight-410;
-        console.log(hei)
+        // console.log(hei)
         this.offHeight = hei;
-        console.log(this.offHeight)
+        // console.log(this.offHeight)
       }
     },
     created() {
@@ -163,6 +151,12 @@
 
 <style lang="less" scoped>
   @import '../../assets/styles/list';
+  .Red {
+    color: #CF2727!important; ;
+  }
+  .Black {
+    color: #0b0306!important; ;
+  }
   .plan{
     font-size: 30px;
     font-weight: bolder;
@@ -173,7 +167,7 @@
     font-size: 26px;
     font-weight: bolder;
     color: #026ab3;
-    margin-left: -60%;
+    /*margin-left: -60%;*/
   }
   .current_banner{
     font-size: 18px;
@@ -214,6 +208,7 @@
     width: 80%;
     text-align: left;
     margin-top: -4%;
+    cursor: pointer;
   }
   .circle {
     border-radius: 50%;
