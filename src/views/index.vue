@@ -246,9 +246,9 @@
           <el-col :span="8">
             <el-button
               size="medium"
-              v-bind:disabled="codePhon"
+              v-bind:disabled="codePhon1"
               @click="Countdown2"
-            >获取验证码{{auth_time}}</el-button>
+            >获取验证码{{auth_time1}}</el-button>
           </el-col>
           <el-col :span="24">
             <span>验证码：</span>
@@ -293,7 +293,9 @@ export default {
       PhoneDia: false,
       PhoneDiaLogin: false,
       codePhon: false,
+      codePhon1: false,
       auth_time: "",
+      auth_time1: "",
       // loginShow: true,
       newS: false,
       dynamicS: false,
@@ -644,13 +646,13 @@ export default {
           message: "请输入手机号!"
         });
       }else {
-        this.codePhon = true;
-        this.auth_time = 60;
+        this.codePhon1 = true;
+        this.auth_time1 = 60;
         var auth_timetimer = setInterval(() => {
-          this.auth_time--;
-          if (this.auth_time <= 0) {
-            this.auth_time = "";
-            this.codePhon = false;
+          this.auth_time1--;
+          if (this.auth_time1 <= 0) {
+            this.auth_time1 = "";
+            this.codePhon1 = false;
             clearInterval(auth_timetimer);
           }
         }, 1000);
@@ -672,6 +674,9 @@ export default {
               type: "error",
               message: res.data.message
             });
+            clearInterval(auth_timetimer);
+            this.codePhon1 = false;
+            this.auth_time1 = '';
           }
         });
       }
