@@ -538,6 +538,11 @@ export default {
                   type: "error",
                   message: res.data.message
                 });
+              }else {
+                this.$message({
+                  type: "error",
+                  message: res.data.message
+                });
               }
             }
           );

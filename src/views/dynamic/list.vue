@@ -81,6 +81,8 @@
         this.heightCen();
         let params1 = {};
         params1['id'] = 123;
+        params['page'] = this.currentPage;
+        params['count'] = this.pageSize;
         API.get('static/news.json', params1).then((res) => {
           console.log(res.data)
           if (res.status == 200) {
@@ -95,10 +97,12 @@
       },
       handleSizeChange(val) {
         this.pageSize = val;
+        this.getPage()
 //        console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
         this.currentPage = val;
+        this.getPage()
       },
       currentDate(){
         var date = new Date();

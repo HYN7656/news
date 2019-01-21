@@ -81,6 +81,8 @@
       getPage(){
         let params = {};
         params['type'] = 2;
+        params['page'] = this.currentPage;
+        params['count'] = this.pageSize;
         API.get('/ification/findByType', params).then((res) => {
           console.log(res.data)
           if(res.data.code == 200){
@@ -100,9 +102,11 @@
       },
       handleSizeChange(val) {
         this.pageSize = val;
+        this.getPage()
       },
       handleCurrentChange(val) {
         this.currentPage = val;
+        this.getPage()
       },
       switcher(id,name){
         this.heightCen();

@@ -23,7 +23,7 @@
       <br/><br/>
       <div class="dis">
         <span>作者：{{datail.nAuthor}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <span>发布时间：{{datail.nReleaseTime}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>发布时间：{{datail.releaseTime}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <span>来源：{{datail.nFrom}}</span>
       </div>
       <br/><br/>
@@ -58,7 +58,10 @@
           API.get('/notice/FindById',params).then((res)=>{
             console.log(res.data)
             if(res.data.code == 200) {
-              this.datail = res.data.data.data;
+              // this.datail = res.data.data.data;
+              var arr = Object.assign({}, res.data.data.data);
+              arr.releaseTime = arr.nReleaseTime.slice(0,19)
+              this.datail = arr;
               this.file = res.data.data.file
               for (var i = 0; i < this.file.length; i++) {
                 this.file[i].url = config.baseURL + this.file[i].fenclUrl;

@@ -115,7 +115,7 @@
         }else if(week===6){
           week='星期六';
         }else if(week===7){
-          week='星期七';
+          week='星期日';
         }
         this.month=month+'月';
         this.day=day;

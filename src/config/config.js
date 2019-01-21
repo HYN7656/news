@@ -7,10 +7,10 @@ export default {
 
   url: '',
   //测试环境
-  /*baseURL: 'http://192.168.3.41:8083',
-  loginURL: 'http://192.168.3.41:8084',*/
-  baseURL: 'http://192.168.206.113:8083',
-  loginURL: 'http://192.168.206.113:8084',
+  baseURL: 'http://192.168.3.41:8083',
+  loginURL: 'http://192.168.3.41:8084',
+  /*baseURL: 'http://192.168.206.113:8083',
+  loginURL: 'http://192.168.206.113:8084',*/
 
   passwordsecret: '*975b99fe*15c9*4341*b21a*f355926ded00',
 

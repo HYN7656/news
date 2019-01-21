@@ -20,7 +20,7 @@
         </div>
         <div class="inner-c detail-table">
             <div class="info">
-                <div class="img"><img class="ewm pic" :src="datail.url"></div>
+                <div class="img"><img class="ewm pic" :src="url"></div>
                 <div class="detail">
                     <div class="title">{{datail.mName}}</div>
                     <div class="time"><i class="icon iconfont icon-shijian"></i>{{datail.startTime}} -- {{datail.endTime}}</div>
@@ -116,7 +116,8 @@
         file: [],
         active: 1,
         formLabelWidth: '120px',
-        startTime : ''
+        startTime : '',
+        url:''
       }
     },
     methods:{
@@ -129,8 +130,7 @@
         API.get('/meeTing/FindById', params).then((res) => {
           console.log(res.data)
           if(res.data.code == 200) {
-            // this.datail = res.data.data.data;
-            this.datail.url = config.baseURL + res.data.data.data.mQrcodeUrl;
+            this.url = config.baseURL + res.data.data.data.mQrcodeUrl;
             this.file = res.data.data.file;
             for(var i=0;i<this.file.length;i++){
               this.file[i].url = config.baseURL + this.file[i].fenclUrl;
