@@ -205,7 +205,7 @@
       :close-on-press-escape="false"
     >
       <el-form ref="form" :model="form" label-width="70px" class="PhoneForm">
-        <p>首次登录需要手机验证</p>
+        <p>登录需要手机验证</p>
         <p>您的手机是{{phoneNum}}，请输入验证码</p>
         <div class="PhoneForm-box">
           <el-col :span="16">

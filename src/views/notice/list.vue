@@ -80,16 +80,6 @@
       }
     },
     methods: {
-      // 翻页器：当前页，同时上一页下一页也能获取当前页
-      handleCurrentChange(val) {
-        // console.log(val);
-        this.pageSize = val;
-      },
-      // 翻页器：选择10条还是20条、
-      handleSizeChange(val) {
-        // console.log(val);
-        this.currentPage = val;
-      },
       // 时间
       currentDate(){
         var date = new Date();
@@ -140,7 +130,7 @@
             params2['count'] = this.pageSize;
             params2['Iid'] = this.typeList[0].id;
             API.get('/notice/FindByIid', params2).then((res) => {
-              // console.log(res.data)
+              console.log(res.data)
               if (res.data.code == 200) {
                 this.contentList = res.data.data;
                 this.total = res.data.count;
@@ -195,7 +185,20 @@
         // console.log(hei)
         this.offHeight = hei;
         // console.log(this.offHeight)
-      }
+      },
+      // 翻页器：当前页，同时上一页下一页也能获取当前页
+      handleCurrentChange(val) {
+        // console.log(val);
+        this.currentPage = val;
+        this.getPage()
+      },
+      // 翻页器：选择10条还是20条、
+      handleSizeChange(val) {
+        // console.log(val);
+        this.pageSize = val;
+
+        this.getPage()
+      },
     },
     mounted: function () {
       this.currentDate();
