@@ -54,28 +54,28 @@
       methods:{
         getPage(){
           this.heightCen();
-          console.log(this.$route.query.id)
+          // console.log(this.$route.query.id);
           let params = {};
           params['id'] = this.$route.query.id;
           API.get('static/newsDetails.json', params).then((res) => {
-            console.log(res.data)
+            // console.log(res.data);
             if (res.status == 200) {
               this.datail = res.data[0];
-              console.log(this.datail);
+              // console.log(this.datail);
             } else {
-              console.log(res.data)
+              console.log(res.data);
             }
           })
         },
         heightCen(){
           let hei = document.documentElement.clientHeight-410;
-          console.log(hei)
+          // console.log(hei);
           this.offHeight = hei;
-          console.log(this.offHeight)
+          // console.log(this.offHeight);
         }
       },
       created(){
-        this.getPage()
+        this.getPage();
       }
     }
 </script>

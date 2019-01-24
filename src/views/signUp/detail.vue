@@ -128,7 +128,7 @@
         let params = {};
         params['id'] = this.$route.query.id;
         API.get('/meeTing/FindById', params).then((res) => {
-          console.log(res.data)
+          // console.log(res.data);
           if(res.data.code == 200) {
             this.url = config.baseURL + res.data.data.data.mQrcodeUrl;
             this.file = res.data.data.file;
@@ -136,18 +136,18 @@
               this.file[i].url = config.baseURL + this.file[i].fenclUrl;
             }
             var arr = Object.assign({}, res.data.data.data);
-            arr.startTime = arr.mStartTime.slice(0,19)
-            arr.endTime = arr.mEndTime.slice(0,19)
+            arr.startTime = arr.mStartTime.slice(0,19);
+            arr.endTime = arr.mEndTime.slice(0,19);
             this.datail = arr;
-            console.log(arr)
+            // console.log(arr);
             this.partakeHost = res.data.data.data.mHostUnit.split(',');
             this.partakeCompany = res.data.data.data.mParticipatingUnits.split(',');
           }
-        })
+        });
       }
     },
     created() {
-      this.getPage()
+      this.getPage();
     }
   }
 </script>

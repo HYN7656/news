@@ -55,13 +55,13 @@
 </template>
 
 <script>
-  import Vue from 'vue'
+  import Vue from 'vue';
   import {Table,TableColumn,Pagination} from 'element-ui';
-  import VueResource from 'vue-resource'
+  import VueResource from 'vue-resource';
   Vue.use(Table);
   Vue.use(TableColumn);
   Vue.use(Pagination);
-  Vue.use(VueResource)
+  Vue.use(VueResource);
   export default {
     data(){
       return{
@@ -84,25 +84,25 @@
         params['page'] = this.currentPage;
         params['count'] = this.pageSize;
         API.get('static/news.json', params1).then((res) => {
-          console.log(res.data)
+          // console.log(res.data);
           if (res.status == 200) {
             this.newsList = res.data;
           } else {
-            console.log(res.data)
+            console.log(res.data);
           }
         })
       },
       dynamicGo(id){
-        this.$router.push({name:'deynamicDetails',query:{id:id}})
+        this.$router.push({name:'deynamicDetails',query:{id:id}});
       },
       handleSizeChange(val) {
         this.pageSize = val;
-        this.getPage()
+        this.getPage();
 //        console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
         this.currentPage = val;
-        this.getPage()
+        this.getPage();
       },
       currentDate(){
         var date = new Date();
@@ -146,7 +146,7 @@
     },
     created() {
       this.currentDate();
-      this.getPage()
+      this.getPage();
     }
   }
 </script>

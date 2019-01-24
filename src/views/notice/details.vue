@@ -52,33 +52,33 @@
       methods:{
         getPage(){
           this.heightCen();
-          console.log(this.$route.query.id)
+          // console.log(this.$route.query.id);
           let params={};
           params['id'] = this.$route.query.id;
           API.get('/notice/FindById',params).then((res)=>{
-            console.log(res.data)
+            // console.log(res.data);
             if(res.data.code == 200) {
               // this.datail = res.data.data.data;
               var arr = Object.assign({}, res.data.data.data);
-              arr.releaseTime = arr.nReleaseTime.slice(0,19)
+              arr.releaseTime = arr.nReleaseTime.slice(0,19);
               this.datail = arr;
-              this.file = res.data.data.file
+              this.file = res.data.data.file;
               for (var i = 0; i < this.file.length; i++) {
                 this.file[i].url = config.baseURL + this.file[i].fenclUrl;
               }
             }
           })
-          console.log(this.$route.query.id)
+          // console.log(this.$route.query.id);
         },
         heightCen(){
           let hei = document.documentElement.clientHeight-410;
-          console.log(hei)
+          // console.log(hei);
           this.offHeight = hei;
-          console.log(this.offHeight)
+          // console.log(this.offHeight);
         }
       },
       created(){
-        this.getPage()
+        this.getPage();
       }
     }
 </script>

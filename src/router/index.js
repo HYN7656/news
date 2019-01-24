@@ -1,31 +1,31 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 // 网页
-import Home from '@/views/index'
+import Home from '@/views/index';
 // import Design from '@/views/design'
 // import Manage from '@/views/manage'
 // import Planning from '@/views/planning'
 // import Reduce from '@/views/reduce'
-import Contact from '@/views/contact'
-import NewList from '@/views/news/list'
-import NewDetails from '@/views/news/details'
-import DynamicList from '@/views/dynamic/list'
-import DynamicDetails from '@/views/dynamic/details'
-import NoticeList from '@/views/notice/list'
-import NoticeDetails from '@/views/notice/details'
-import signUpList from '@/views/signUp/list'
-import signUpForm from '@/views/signUp/form'
-import signUpDetail from '@/views/signUp/detail'
-import PlanList from '@/views/plan/list'
-import PlanDetails from '@/views/plan/details'
-import ManageList from '@/views/manage/list'
-import ManageDetails from '@/views/manage/details'
-import DesignList from '@/views/design/list'
-import DesignDetails from '@/views/design/details'
-import EnergyList from '@/views/energy/list'
-import EnergyDetails from '@/views/energy/details'
+import Contact from '@/views/contact';
+import NewList from '@/views/news/list';
+import NewDetails from '@/views/news/details';
+import DynamicList from '@/views/dynamic/list';
+import DynamicDetails from '@/views/dynamic/details';
+import NoticeList from '@/views/notice/list';
+import NoticeDetails from '@/views/notice/details';
+import signUpList from '@/views/signUp/list';
+import signUpForm from '@/views/signUp/form';
+import signUpDetail from '@/views/signUp/detail';
+import PlanList from '@/views/plan/list';
+import PlanDetails from '@/views/plan/details';
+import ManageList from '@/views/manage/list';
+import ManageDetails from '@/views/manage/details';
+import DesignList from '@/views/design/list';
+import DesignDetails from '@/views/design/details';
+import EnergyList from '@/views/energy/list';
+import EnergyDetails from '@/views/energy/details';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   // base: '/',
@@ -132,4 +132,4 @@ export default new Router({
       component: EnergyDetails
     },
   ]
-})
+});

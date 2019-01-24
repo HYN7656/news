@@ -85,15 +85,15 @@
       },
       methods:{
         getPage(){
-          console.log(window.location.href)
+          // console.log(window.location.href);
           function getQueryString(name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
             var r = window.location.search.substr(1).match(reg);
             if (r != null) return unescape(r[2]);
             return null;
           }
-          this.mId = getQueryString('id')
-          console.log(this.mId)
+          this.mId = getQueryString('id');
+          // console.log(this.mId);
         },
         openPick1(){
           this.$refs.picker1.open();
@@ -102,15 +102,15 @@
           this.$refs.picker2.open();
         },
         handleConfirm1 (data) {
-          let date = moment(data).format('YYYY-MM-DD')
-          this.form.sTime = date
+          let date = moment(data).format('YYYY-MM-DD');
+          this.form.sTime = date;
         },
         handleConfirm2 (data) {
-          let date = moment(data).format('YYYY-MM-DD HH:mm:ss')
-          this.form.sTrainTime = date
+          let date = moment(data).format('YYYY-MM-DD HH:mm:ss');
+          this.form.sTrainTime = date;
         },
         save(){
-          console.log(this.form)
+          // console.log(this.form);
           let params = {};
           params['sForm'] = this.form.sForm;
           params['sName'] = this.form.sName;
@@ -122,10 +122,10 @@
           params['sTrain'] = this.form.sTrain;
           params['sTrainTime'] = this.form.sTrainTime;
           params['mId'] = this.mId;
-          console.log(params)
+          // console.log(params);
 
           API.post('/signup/create', params).then((res) => {
-            console.log(res.data)
+            // console.log(res.data);
             if (res.data.code == 200) {
               this.form ={
                   sForm: '',
@@ -148,11 +148,11 @@
                 message: '提交失败!'
               });
             }
-          })
+          });
         }
       },
       created() {
-        this.getPage()
+        this.getPage();
       }
     }
 </script>

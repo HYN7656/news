@@ -46,13 +46,13 @@
 </template>
 
 <script>
-  import Vue from 'vue'
+  import Vue from 'vue';
   import {Table,TableColumn,Pagination} from 'element-ui';
-  import VueResource from 'vue-resource'
+  import VueResource from 'vue-resource';
   Vue.use(Table);
   Vue.use(TableColumn);
   Vue.use(Pagination);
-  Vue.use(VueResource)
+  Vue.use(VueResource);
   export default {
     data(){
       return{
@@ -84,26 +84,26 @@
         params['page'] = this.currentPage;
         params['count'] = this.pageSize;
         API.get('/ification/findByType', params).then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           if(res.data.code == 200){
             var arr = [];
-            this.typeList = arr.concat(res.data.data)
+            this.typeList = arr.concat(res.data.data);
             for(var i=0;i<this.typeList.length;i++){
               this.typeList[i].name = this.typeList[i].iName.slice(0,10);
             }
             this.currentPlanName = this.typeList[0].iName;
-            this.switcher(this.typeList[0].id,this.typeList[0].iName)
+            this.switcher(this.typeList[0].id,this.typeList[0].iName);
           }
         })
-        console.log(this.typeList)
+        // console.log(this.typeList);
       },
       handleSizeChange(val) {
         this.pageSize = val;
-        this.getPage()
+        this.getPage();
       },
       handleCurrentChange(val) {
         this.currentPage = val;
-        this.getPage()
+        this.getPage();
       },
       switcher(id,name){
         this.heightCen();
@@ -114,31 +114,31 @@
         params['iId'] = id;
         params['page'] = this.currentPage;
         params['count'] = this.pageSize;
-        console.log(params)
+        // console.log(params);
         API.get('/management/findAllByrelease', params).then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           if (res.data.code == 200) {
             this.list = res.data.data;
             this.total = res.data.count;
 
             if(this.total>0){
-              this.pag = true
+              this.pag = true;
             }else {
-              this.pag = false
+              this.pag = false;
             }
           } else {
-            console.log(res.data)
+            console.log(res.data);
           }
         })
       },
       EdtailsGo(id){
-        this.$router.push({name:'manageDetails',query:{id:id}})
+        this.$router.push({name:'manageDetails',query:{id:id}});
       },
       heightCen(){
         let hei = document.documentElement.clientHeight-410;
-        console.log(hei)
+        // console.log(hei);
         this.offHeight = hei;
-        console.log(this.offHeight)
+        // console.log(this.offHeight);
       }
     },
     created() {

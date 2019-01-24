@@ -53,13 +53,13 @@
 </template>
 
 <script>
-  import Vue from 'vue'
+  import Vue from 'vue';
   import {Table,TableColumn,Pagination} from 'element-ui';
-  import VueResource from 'vue-resource'
+  import VueResource from 'vue-resource';
   Vue.use(Table);
   Vue.use(TableColumn);
   Vue.use(Pagination);
-  Vue.use(VueResource)
+  Vue.use(VueResource);
   export default {
     data(){
       return{
@@ -113,7 +113,7 @@
       },
       // 页面初始化
       getPage(){
-        this.heightCen()
+        this.heightCen();
         // 分类
         let params = {};
         params['type'] = 1;
@@ -122,7 +122,7 @@
           if (res.data.code == 200) {
             this.typeList = res.data.data;
 
-            console.log(this.typeList);
+            // console.log(this.typeList);
             // 第一个分类的列表
             this.isActive = this.typeList[0].id;
             let params2 = {};
@@ -130,18 +130,18 @@
             params2['count'] = this.pageSize;
             params2['Iid'] = this.typeList[0].id;
             API.get('/notice/FindByIid', params2).then((res) => {
-              console.log(res.data)
+              // console.log(res.data);
               if (res.data.code == 200) {
                 this.contentList = res.data.data;
                 this.total = res.data.count;
                 if(this.total>0){
-                  this.pag = true
+                  this.pag = true;
                 }else {
-                  this.pag = false
+                  this.pag = false;
                 }
                 // console.log(this.contentList);
               } else {
-                console.log(res.data)
+                console.log(res.data);
               }
             })
             // 分类横条样式
@@ -150,7 +150,7 @@
               that.widthStyle = that.$refs.ulWidth.clientWidth;
             })
           } else {
-            console.log(res.data)
+            console.log(res.data);
           }
         })
       },
@@ -170,13 +170,13 @@
             this.contentList = res.data.data;
             this.total = res.data.count;
             if(this.total>0){
-              this.pag = true
+              this.pag = true;
             }else {
-              this.pag = false
+              this.pag = false;
             }
             // console.log(this.contentList);
           } else {
-            console.log(res.data)
+            console.log(res.data);
           }
         })
       },
@@ -190,21 +190,21 @@
       handleCurrentChange(val) {
         // console.log(val);
         this.currentPage = val;
-        this.getPage()
+        this.getPage();
       },
       // 翻页器：选择10条还是20条、
       handleSizeChange(val) {
         // console.log(val);
         this.pageSize = val;
 
-        this.getPage()
+        this.getPage();
       },
     },
     mounted: function () {
       this.currentDate();
     },
     created(){
-      this.getPage()
+      this.getPage();
     }
   }
 </script>

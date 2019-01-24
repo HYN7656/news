@@ -76,9 +76,9 @@
           let params = {};
           params['uName'] = this.userNum;
           params['uPasswd'] = this.userPassword;
-          console.log(params)
+          // console.log(params);
           API.post('/ususer/login', params).then((res) => {
-            console.log(res.data)
+            // console.log(res.data);
             if (res.data.code == 200) {
               this.$message({
                 type: 'success',
@@ -89,14 +89,14 @@
               storage.set('token', res.data.data.token);
               storage.set('sysid', res.data.data.id);
               storage.setJson('auth', res.data.data.diction);
-              this.$router.push({name: 'home'})
+              this.$router.push({name: 'home'});
             } else {
               this.$message({
                 type: 'error',
                 message: '登录失败!'
               });
             }
-          })
+          });
         }
       },
       /*showRegister() {

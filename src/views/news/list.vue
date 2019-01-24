@@ -42,13 +42,13 @@
 
 <script>
   import config from "@/config/config.js";
-  import Vue from 'vue'
+  import Vue from 'vue';
   import {Table,TableColumn,Pagination} from 'element-ui';
-  import VueResource from 'vue-resource'
+  import VueResource from 'vue-resource';
   Vue.use(Table);
   Vue.use(TableColumn);
   Vue.use(Pagination);
-  Vue.use(VueResource)
+  Vue.use(VueResource);
     export default {
         //name: "list.vue"
       data(){
@@ -69,48 +69,48 @@
           params['page'] = this.currentPage;
           params['count'] = this.pageSize;
           API.get('/newsInfo/FindAllByrelease', params).then((res) => {
-            console.log(res.data)
+            // console.log(res.data);
             if (res.data.code  == 200) {
               for(var i=0;i<res.data.data.length;i++){
-                res.data.data[i].url = config.baseURL + res.data.data[i].fImgUrl
+                res.data.data[i].url = config.baseURL + res.data.data[i].fImgUrl;
               }
               this.newsList = res.data.data;
 
               this.total = res.data.count;
               if(this.total>0){
-                this.pag = true
+                this.pag = true;
               }else {
-                this.pag = false
+                this.pag = false;
               }
             } else {
-              console.log(res.data)
+              console.log(res.data);
             }
           })
         },
         newsGo(id){
-          this.$router.push({name:'newDetails',query:{id:id}})
+          this.$router.push({name:'newDetails',query:{id:id}});
         },
         // 翻页器：当前页，同时上一页下一页也能获取当前页
         handleCurrentChange(val) {
           this.currentPage = val;
-          this.getPage()
-          console.log(val);
+          this.getPage();
+          // console.log(val);
         },
         // 翻页器：选择10条还是20条、
         handleSizeChange(val) {
           this.pageSize = val;
-          this.getPage()
-          console.log(val);
+          this.getPage();
+          // console.log(val);
         },
         heightCen(){
           let hei = document.documentElement.clientHeight-410;
-          console.log(hei)
+          // console.log(hei);
           this.offHeight = hei;
-          console.log(this.offHeight)
+          // console.log(this.offHeight);
         }
       },
       created() {
-        this.getPage()
+        this.getPage();
       }
     }
 </script>

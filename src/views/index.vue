@@ -364,7 +364,7 @@ export default {
       var arr = [];
       var num = 0;
       API.get("/newsInfo/FindAllByrelease", params).then(res => {
-        console.log(res.data)
+        // console.log(res.data);
         if (res.data.code == 200) {
           for(var i=0;i<res.data.data.length;i++){
             res.data.data[i].url = config.baseURL + res.data.data[i].fImgUrl;
@@ -386,7 +386,7 @@ export default {
             this.newS = true;
           }
         } else {
-          console.log(res.data)
+          console.log(res.data);
         }
       });
     },
@@ -546,8 +546,7 @@ export default {
                   message: res.data.message
                 });
               }
-            }
-          );
+            });
         }
       }
     },
@@ -736,8 +735,7 @@ export default {
                 message: res.data.message
               });
             }
-          }
-        );
+          });
       }
     },
     // 退出
@@ -908,7 +906,7 @@ export default {
               message: "子系统菜单查询错误：" + response.data.message
             });
           }
-        })
+        });
         .catch(error => {
           // console.log(error.response);
           this.$message({

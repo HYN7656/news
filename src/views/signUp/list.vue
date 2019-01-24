@@ -31,25 +31,25 @@
         let params1 = {};
         params1['id'] = 123;
         API.get('/meeTing/FindAllByrelease', params1).then((res) => {
-          console.log(res.data)
+          // console.log(res.data);
           if (res.data.code == 200) {
             var arr = res.data.data;
             for(var i=0;i<arr.length;i++){
-              arr[i].startTime = arr[i].mstartTime.slice(0,19)
-              arr[i].endTime = arr[i].mendTime.slice(0,19)
-              arr[i].url = config.baseURL +arr[i].mqrcodeUrl
+              arr[i].startTime = arr[i].mstartTime.slice(0,19);
+              arr[i].endTime = arr[i].mendTime.slice(0,19);
+              arr[i].url = config.baseURL +arr[i].mqrcodeUrl;
             }
             this.meetingList = arr;
           } else {
-            console.log(res.data)
+            console.log(res.data);
           }
         })
       },
       heightCen(){
         let hei = document.documentElement.clientHeight-410;
-        console.log(hei)
+        // console.log(hei);
         this.offHeight = hei;
-        console.log(this.offHeight)
+        // console.log(this.offHeight);
       }
 
     },

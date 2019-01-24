@@ -29,9 +29,9 @@ export default {
   },
   created() {
     if(this.$route.path == '/form'){
-      this.formShow = true
+      this.formShow = true;
     }else {
-      this.formShow = false
+      this.formShow = false;
     }
   }
 }
