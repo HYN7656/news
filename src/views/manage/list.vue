@@ -10,7 +10,7 @@
       </div>
       <br/><br/>
       <ul class="current_banner">
-        <li v-for="i in typeList" :key="i.id" class="liStyle"><a @click="switcher(i.id,i.iName)" class="banner_color" :class="{active:isActive == i.id}">{{i.name}}</a></li>
+        <li v-for="i in typeList" :key="i.id" class="liStyle" :title="i.iName"><a @click="getSwit(i.id,i.iName)" class="banner_color" :class="{active:isActive == i.id}">{{i.name}}</a></li>
       </ul>
       <div class="contentList" :class="{active:isActive == this.isActive}">
         <div v-for="(item,index) in list">
@@ -75,6 +75,10 @@
         contentHidden: true,
         Red : 'Red',
         Black : 'Black',
+        pageFLID : '',
+        pageFLName : '',
+        pagId:'',
+        pagName:''
       }
     },
     methods: {
@@ -99,13 +103,28 @@
       },
       handleSizeChange(val) {
         this.pageSize = val;
-        this.getPage();
+        if(this.pageFLID != this.pagId){
+          this.switcher(this.pageFLID,this.pageFLName)
+        }else {
+          this.getPage();
+        }
       },
       handleCurrentChange(val) {
         this.currentPage = val;
-        this.getPage();
+        if(this.pageFLID != this.pagId){
+          this.switcher(this.pageFLID,this.pageFLName)
+        }else {
+          this.getPage();
+        }
+      },
+      getSwit(id,name){
+        this.currentPage = 1;
+        this.pageSize = 10;
+        this.switcher(id,name)
       },
       switcher(id,name){
+        this.pageFLID = id;
+        this.pageFLName = name;
         this.heightCen();
         this.isActive = id;
         this.currentPlanName = name;

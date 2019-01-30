@@ -3,7 +3,7 @@
     <br>
     <div class="contain">
       <ul class="current_banner" ref="ulWidth">
-        <li v-for="i in typeList" :key="i.id"><a @click="switcher(i.id)" class="banner_color" :class="{active:isActive == i.id}">{{i.iName}}</a></li>
+        <li v-for="i in typeList" :key="i.id"><a @click="getSwit(i.id)" class="banner_color" :class="{active:isActive == i.id}">{{i.iName}}</a></li>
       </ul>
     </div>
     <br/>
@@ -76,7 +76,9 @@
         Black : 'Black',
         isActive : '',
         offHeight : 0,
-        pag:false
+        pag:false,
+        pageFLID : '',
+        pagId:''
       }
     },
     methods: {
@@ -118,19 +120,19 @@
         let params = {};
         params['type'] = 1;
         API.get('/ification/findByType', params).then((res) => {
-          // console.log(res.data)
+          console.log(res.data)
           if (res.data.code == 200) {
             this.typeList = res.data.data;
-
-            // console.log(this.typeList);
             // 第一个分类的列表
             this.isActive = this.typeList[0].id;
+            this.pageFLID = this.typeList[0].id;
+            this.pagId = this.typeList;
             let params2 = {};
             params2['page'] = this.currentPage;
             params2['count'] = this.pageSize;
             params2['Iid'] = this.typeList[0].id;
             API.get('/notice/FindByIid', params2).then((res) => {
-              // console.log(res.data);
+              console.log(res.data);
               if (res.data.code == 200) {
                 this.contentList = res.data.data;
                 this.total = res.data.count;
@@ -154,11 +156,16 @@
           }
         })
       },
+      getSwit(id){
+        this.currentPage = 1;
+        this.pageSize = 10;
+        this.switcher(id)
+      },
       // 点击分类
       switcher(id){
+        this.pageFLID = id;
         this.heightCen();
         this.isActive = id;
-        // console.log(this.isActive)
         let params = {};
         params['Iid'] = id;
         params['page'] = this.currentPage;
@@ -182,22 +189,27 @@
       },
       heightCen(){
         let hei = document.documentElement.clientHeight-410;
-        // console.log(hei)
         this.offHeight = hei;
-        // console.log(this.offHeight)
       },
       // 翻页器：当前页，同时上一页下一页也能获取当前页
       handleCurrentChange(val) {
         // console.log(val);
         this.currentPage = val;
-        this.getPage();
+        if(this.pageFLID != this.pagId){
+          this.switcher(this.pageFLID)
+        }else {
+          this.getPage();
+        }
       },
       // 翻页器：选择10条还是20条、
       handleSizeChange(val) {
         // console.log(val);
         this.pageSize = val;
-
-        this.getPage();
+        if(this.pageFLID != this.pagId){
+          this.switcher(this.pageFLID)
+        }else {
+          this.getPage();
+        }
       },
     },
     mounted: function () {

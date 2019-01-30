@@ -906,7 +906,7 @@ export default {
               message: "子系统菜单查询错误：" + response.data.message
             });
           }
-        });
+        })
         .catch(error => {
           // console.log(error.response);
           this.$message({
