@@ -3,26 +3,32 @@
     <p class="titleH">
       <span>请填写报名表单</span>
     </p>
-      <el-form>
-        <el-form-item label="报名形式：" :label-width="formLabelWidth">
-          <el-select v-model="form.sForm" placeholder="请选择报名形式">
-            <el-option label="以个人形式报名" value="以个人形式报名"></el-option>
-            <el-option label="以单位集体形式报名" value="以单位集体形式报名"></el-option>
-          </el-select>
+      <el-form ref="form"
+               :model="form"
+               status-icon
+               :rules="rules">
+        <el-form-item label="参会名称：" :label-width="formLabelWidth" prop="sName">
+          <el-input v-model="sName" autocomplete="off" placeholder="请填写参会名称" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="参会名称：" :label-width="formLabelWidth">
-          <el-input v-model="form.sName" autocomplete="off" placeholder="请填写参会名称"></el-input>
-        </el-form-item>
-        <el-form-item label="参会人名称：" :label-width="formLabelWidth">
+        <el-form-item label="参会人名称：" :label-width="formLabelWidth" prop="sPeopleName">
           <el-input v-model="form.sPeopleName" autocomplete="off" placeholder="请填写参会人名称"></el-input>
         </el-form-item>
-        <el-form-item label="所属单位：" :label-width="formLabelWidth">
+        <el-form-item label="所属单位：" :label-width="formLabelWidth" prop="sUnit">
           <el-input v-model="form.sUnit" autocomplete="off" placeholder="请填写所属单位"></el-input>
         </el-form-item>
-        <el-form-item label="联系方式：" :label-width="formLabelWidth">
+        <el-form-item label="职位：" :label-width="formLabelWidth" class="inpSel" prop="pDuty">
+          <el-autocomplete
+            class="inline-input"
+            v-model="form.pDuty"
+            :fetch-suggestions="querySearch"
+            placeholder="请输入内容"
+            @select="handleSelect"
+          ></el-autocomplete>
+        </el-form-item>
+        <el-form-item label="联系方式：" :label-width="formLabelWidth" prop="sMobile">
           <el-input v-model="form.sMobile" autocomplete="off" placeholder="请填写联系方式"></el-input>
         </el-form-item>
-        <el-form-item label="到会日期：" :label-width="formLabelWidth">
+        <el-form-item label="到会日期：" :label-width="formLabelWidth" prop="sTime">
           <el-input v-model="form.sTime" autocomplete="off" placeholder="请填写到会日期" @focus="openPick1"></el-input>
           <mt-datetime-picker
             ref="picker1"
@@ -32,14 +38,20 @@
           </mt-datetime-picker>
           <!--v-model="form.date"-->
         </el-form-item>
+        <el-form-item label="到会时间：" :label-width="formLabelWidth" prop="sHalf">
+          <el-select v-model="form.sHalf" placeholder="请选择到会时间">
+            <el-option label="上午" value="上午"></el-option>
+            <el-option label="下午" value="下午"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="乘坐交通工具：" prop="resource" :label-width="formLabelWidth" class="jtgj">
           <el-radio-group v-model="form.sVehicle" >
-            <el-radio label="1">火车</el-radio>
-            <el-radio label="2">飞机</el-radio>
+            <el-radio label="0">火车</el-radio>
+            <el-radio label="1">飞机</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="车次：" :label-width="formLabelWidth">
-          <el-input v-model="form.sTrain" autocomplete="off" placeholder="请填写车次"></el-input>
+        <el-form-item label="车次/航班号：" :label-width="formLabelWidth">
+          <el-input v-model="form.sTrain" autocomplete="off" placeholder="请填写车次/航班号"></el-input>
         </el-form-item>
         <el-form-item label="时间：" :label-width="formLabelWidth">
           <el-input v-model="form.sTrainTime" autocomplete="off" placeholder="请填写时间" @focus="openPick2"></el-input>
@@ -52,7 +64,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="save" class="confirm">提 交</el-button>
+        <el-button type="primary" @click="save('form')" class="confirm">提 交</el-button>
       </div>
 
   </div>
@@ -63,36 +75,65 @@
    import moment from 'moment'
     export default {
       data(){
+        var checkPhone = (rule, value, callback) => {
+          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+          ////console.log(reg.test(value));
+          if (reg.test(value)) {
+            callback();
+          } else {
+            return callback(new Error('请输入正确的手机号'));
+          }
+        };
         return{
           datail:{},
           formVis : true,
           formLabelWidth : '',
           mId : '',
+          sName: '',
           form: {
-            sForm: '',
-            sName: '',
+            // sForm: '',
             sPeopleName:'',
             sUnit:'',
             sMobile:'',
             sTime: '',
-            sVehicle:'1',
+            sHalf:'',
+            sVehicle:'0',
             sTrain:'',
             sTrainTime:'',
+            pDuty:''
           },
           // pickerValue:'',
           startDate:new Date(),
+          restaurants: [],
+          // pDuty: '',
+          rules: {
+            sPeopleName: [
+              {required: true, message: '参会人姓名必填', trigger: 'blur'},
+            ],
+            sUnit: [
+              {required: true, message: '所属单位必填', trigger: 'blur'},
+            ],
+            sMobile: [
+              {required: true, message: '联系方式必填', trigger: 'blur'},
+              { validator: checkPhone, trigger: 'blur' },
+            ],
+            sTime: [
+              {required: true, message: '到会日期必填', trigger: 'blur'},
+            ],
+            sHalf: [
+              {required: true, message: '到会时间必填', trigger: 'blur'},
+            ],
+            pDuty: [
+              {required: true, message: '职位必填', trigger: 'blur'},
+            ],
+
+          }
         }
       },
       methods:{
         getPage(){
-          // console.log(window.location.href);
-          function getQueryString(name) {
-            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-            var r = window.location.search.substr(1).match(reg);
-            if (r != null) return unescape(r[2]);
-            return null;
-          }
-          this.mId = getQueryString('id');
+          this.sName = this.$route.query.name;
+          this.mId = this.$route.query.id;
           // console.log(this.mId);
         },
         openPick1(){
@@ -109,57 +150,115 @@
           let date = moment(data).format('YYYY-MM-DD HH:mm:ss');
           this.form.sTrainTime = date;
         },
-        save(){
-          // console.log(this.form);
-          let params = {};
-          params['sForm'] = this.form.sForm;
-          params['sName'] = this.form.sName;
-          params['sPeopleName'] = this.form.sPeopleName;
-          params['sUnit'] = this.form.sUnit;
-          params['sMobile'] = this.form.sMobile;
-          params['sTime'] = this.form.sTime;
-          params['sVehicle'] = this.form.sVehicle;
-          params['sTrain'] = this.form.sTrain;
-          params['sTrainTime'] = this.form.sTrainTime;
-          params['mId'] = this.mId;
-          // console.log(params);
-
-          API.post('/signup/create', params).then((res) => {
-            // console.log(res.data);
-            if (res.data.code == 200) {
-              this.form ={
-                  sForm: '',
-                  sName: '',
-                  sPeopleName:'',
-                  sUnit:'',
-                  sMobile:'',
-                  sTime: '',
-                  sVehicle:'1',
-                  sTrain:'',
-                  sTrainTime:'',
-              },
-              this.$message({
-                type: 'success',
-                message: '提交成功!'
-              });
-            } else {
-              this.$message({
-                type: 'error',
-                message: '提交失败!'
+        save(formName){
+          this.$refs[formName].validate((valid) => {
+            if (valid) {
+              let params = {};
+              // params['sForm'] = this.form.sForm;
+              params['pName'] = this.sName;
+              params['pPeopleName'] = this.form.sPeopleName;
+              params['pUnit'] = this.form.sUnit;
+              params['pDuty'] = this.form.pDuty;
+              params['pMobile'] = this.form.sMobile;
+              params['pTime'] = this.form.sTime;
+              params['pHalf'] = this.form.sHalf;
+              params['pVehicle'] = this.form.sVehicle;
+              params['pTrain'] = this.form.sTrain;
+              params['pTrainTime'] = this.form.sTrainTime;
+              params['pMeetingId'] = this.mId;
+              console.log(params);
+              API.post('/signup/create', params).then((res) => {
+                // console.log(res.data);
+                if (res.data.code == 200) {
+                    this.$message({
+                      type: 'success',
+                      message: '提交成功!'
+                    });
+                } else {
+                  this.$message({
+                    type: 'error',
+                    message: '提交失败!'
+                  });
+                }
               });
             }
-          });
+          })
+        },
+        querySearch(queryString, cb) {
+          var restaurants = this.restaurants;
+          var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+          // 调用 callback 返回建议列表的数据
+          cb(results);
+        },
+        createFilter(queryString) {
+          return (restaurant) => {
+            return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          };
+        },
+        loadAll() {
+          return [
+            { "value": "总经理" },
+            { "value": "总经理助理" },
+            { "value": "总监" },
+            { "value": "主任" },
+            { "value": "主管" },
+            { "value": "经理" },
+            { "value": "副总经理" },
+            { "value": "副总监" },
+            { "value": "副主任" },
+            { "value": "副经理" },
+            { "value": "工程师" },
+            { "value": "情报员" },
+            { "value": "签派员" },
+            { "value": "运控员" },
+          ];
+        },
+        handleSelect(item) {
+          console.log(item);
         }
       },
       created() {
         this.getPage();
+      },
+      mounted() {
+        this.restaurants = this.loadAll();
       }
     }
 </script>
-
+<style>
+  .inpSel .el-autocomplete {
+    position: relative;
+    font-size: 14px;
+    display: inline-block;
+    width: 100%;
+  }
+  .el-form-item__error {
+    right: 0;
+    left: initial;
+  }
+</style>
 <style scoped lang="less">
   html {
     font-size: 16px;
+  }
+  .my-autocomplete {
+    li {
+      line-height: normal;
+      padding: 7px;
+
+      .name {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .addr {
+        font-size: 12px;
+        color: #b4b4b4;
+      }
+
+      .highlighted .addr {
+        color: #ddd;
+      }
+    }
   }
   .formBox {
     width: 80%;

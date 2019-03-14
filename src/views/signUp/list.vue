@@ -14,6 +14,17 @@
                 </div>
             </router-link>
         </div>
+      <!--分页-->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total=parseInt(total)
+        v-show="pag">
+      </el-pagination>
     </div>
 </template>
 
@@ -22,15 +33,21 @@
   export default {
     data () {
       return {
-        meetingList : []
+        meetingList : [],
+        currentPage: 1,      //当前页
+        total: 0,          //数据总条数
+        pageSize: 10,        //每页显示的数据条数
+        pag : false
       }
     },
     methods:{
       getPage(){
         this.heightCen();
-        let params1 = {};
-        params1['id'] = 123;
-        API.get('/meeTing/FindAllByrelease', params1).then((res) => {
+        let params = {};
+        // params1['id'] = 123;
+        params['page'] = this.currentPage;
+        params['count'] = this.pageSize;
+        API.get('/meeTing/FindAllByrelease', params).then((res) => {
           // console.log(res.data);
           if (res.data.code == 200) {
             var arr = res.data.data;
@@ -40,6 +57,12 @@
               arr[i].url = config.baseURL +arr[i].mqrcodeUrl;
             }
             this.meetingList = arr;
+            this.total = res.data.count;
+            if(this.total>0){
+              this.pag = true;
+            }else {
+              this.pag = false;
+            }
           } else {
             console.log(res.data);
           }
@@ -50,7 +73,19 @@
         // console.log(hei);
         this.offHeight = hei;
         // console.log(this.offHeight);
-      }
+      },
+      // 翻页器：当前页，同时上一页下一页也能获取当前页
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        this.getPage();
+        // console.log(val);
+      },
+      // 翻页器：选择10条还是20条、
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.getPage();
+        // console.log(val);
+      },
 
     },
     created() {
@@ -58,6 +93,11 @@
     }
   }
 </script>
+<style>
+  .sign-list .el-pagination {
+    margin-bottom: 50px;
+  }
+</style>
 
 <style scoped lang="less">
     .sign-list {

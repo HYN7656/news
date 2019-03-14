@@ -25,7 +25,7 @@
                     <div class="title">{{datail.mName}}</div>
                     <div class="time"><i class="icon iconfont icon-shijian"></i>{{datail.startTime}} -- {{datail.endTime}}</div>
                     <div class="address"><i class="icon iconfont icon-dingweiweizhi"></i>{{datail.mAddress}}</div>
-                    <div class="btn"><router-link :to="{path:'/form',query:{id:datail.id}}">在线报名</router-link></div>
+                    <div class="btn"><router-link :to="{path:'/form',query:{id:datail.id,name:datail.mName}}">在线报名</router-link></div>
                     <div class="wechart">
                         <img src="" alt="">
                         <p class="name">扫描二维码报名</p>
