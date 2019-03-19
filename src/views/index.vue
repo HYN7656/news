@@ -78,7 +78,7 @@
             <div class="cell button" @click="login">登录</div>
             <el-row :gutter="20">
               <el-col :span="12"><div class="cell button" @click="PhoneLogin">手机验证方式登录</div></el-col>
-              <el-col :span="12"><div class="cell button" @click="dialogFormVisible = true" label="left">注册</div></el-col>
+              <el-col :span="12"><div class="cell button" @click="Register" label="left">注册</div></el-col>
             </el-row>
           </div>
         </div>
@@ -131,14 +131,17 @@
       </div>
     </div>
     <!--对话框-->
-    <el-dialog :visible.sync="dialogFormVisible" class="sign-dialog">
+    <el-dialog :visible.sync="dialogFormVisible" class="sign-dialog" :close-on-click-modal="false">
       <p style="font-size: 24px;font-weight: bolder">注册</p>
       <br>
-      <el-form label-width="20%" :model="form">
-        <el-form-item label="用户名：">
+      <el-form label-width="20%" ref="form"
+               :model="form"
+               :rules="rules"
+               status-icon>
+        <el-form-item label="用户名：" prop="username">
           <el-input v-model="form.username" autocomplete="off" placeholder="请填写您的用户名"></el-input>
         </el-form-item>
-        <el-form-item label="密码：">
+        <el-form-item label="密码：" prop="password">
           <el-input
             v-model="form.password"
             autocomplete="off"
@@ -146,52 +149,58 @@
             placeholder="请填写您的密码"
           ></el-input>
         </el-form-item>
-        <el-form-item label="确认密码：">
+        <el-form-item label="确认密码：" prop="respassword">
           <el-input
-            v-model="respassword"
+            v-model="form.respassword"
             autocomplete="off"
             type="password"
-            @blur="verify_pas"
             placeholder="请再次填写您的密码"
           ></el-input>
         </el-form-item>
-        <el-form-item label="所属单位：">
-          <el-input v-model="form.unit" autocomplete="off" placeholder="请填写您的所属单位"></el-input>
+        <el-form-item label="所属单位：" prop="unit" class="sel-Org">
+          <el-select filterable v-model="form.unit" placeholder="请选择所属单位">
+            <el-option
+              v-for="item in OrgOpt"
+              :key="item.id"
+              :label="item.mName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+          <!--<el-input v-model="form.unit" autocomplete="off" placeholder="请填写您的所属单位"></el-input>-->
         </el-form-item>
         <el-form-item label="部  门：">
           <el-input v-model="form.department" autocomplete="off" placeholder="请填写您的部门"></el-input>
         </el-form-item>
-        <el-form-item label="姓  名：">
+        <el-form-item label="姓  名：" prop="name">
           <el-input v-model="form.name" autocomplete="off" placeholder="请填写您的真实姓名"></el-input>
         </el-form-item>
-        <el-form-item label="身份证号：">
+        <el-form-item label="身份证号：" prop="id_number">
           <el-input v-model="form.id_number" autocomplete="off" placeholder="请填写您的身份证号"></el-input>
         </el-form-item>
-        <el-form-item label="手机号： ">
+        <el-form-item label="手机号： " prop="phone">
           <el-input
             v-model="form.phone"
             autocomplete="off"
             placeholder="请填写您的手机号"
-            style="width: 40%;text-align: left"
           ></el-input>
-          <el-input v-model="reg_code" autocomplete="off" placeholder="短信验证" style="width: 30%"></el-input>
-          <span class="code-btn" @click="register_validate">获取验证码</span>
+          <!--<el-button class="code-btn" @click="Countdown3" v-bind:disabled="codePhon2">获取验证码{{auth_timezc}}</el-button>-->
         </el-form-item>
+        <!--<el-form-item label="验证码： " prop="reg_code">
+          <el-input v-model="form.reg_code" autocomplete="off" placeholder="短信验证" style="width: 30%"></el-input>
+        </el-form-item>-->
         <el-form-item label="证件附件：">
           <el-upload
-            class="upload-demo"
-            action
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList2"
-            list-type="picture"
-          >
-            <el-button size="small" type="primary" style="float: left">点击上传</el-button>
+            class="avatar-uploader"
+            :action="uploadUrlImg()"
+            :show-file-list="false"
+            :on-success="succImgAdd">
+            <img v-if="form.fImgUrl" :src="form.fImgUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="register" class="confirm">注 册</el-button>
+        <el-button type="primary" @click="register('form')" class="confirm">注 册</el-button>
         <el-button @click="cancel" class="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -273,7 +282,48 @@ import md5 from 'js-md5';
 export default {
   //    name: 'HelloWorld',
   data() {
+    var validatePass = (rule, value, callback) => {
+      const reg = /^[0-9a-zA-Z]*$/g;
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else if(reg.test(value)){
+        callback();
+      } else {
+        return callback(new Error('密码只能为字母和数字'));
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.form.password) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+    var checkPhone = (rule, value, callback) => {
+      const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+      ////console.log(reg.test(value));
+      if (reg.test(value)) {
+        callback();
+      } else {
+        return callback(new Error('请输入正确的手机号'));
+      }
+    };
+    var idCord = (rule, value, callback) => {
+      const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+      ////console.log(reg.test(value));
+      if (value === ''){
+        callback();
+      } else if(reg.test(value)) {
+        callback();
+      } else {
+        return callback(new Error('请输入正确的身份证号'));
+      }
+    };
     return {
+
+      // myHeaders :{Authorization:storage.get('token')},
       indexMenus: [],
       menuSubsystem: {
         换季申请: {
@@ -294,8 +344,10 @@ export default {
       PhoneDiaLogin: false,
       codePhon: false,
       codePhon1: false,
+      codePhon2:false,
       auth_time: "",
       auth_time1: "",
+      auth_timezc:"",
       // loginShow: true,
       newS: false,
       dynamicS: false,
@@ -319,18 +371,21 @@ export default {
       Black: "Black",
       dialogFormVisible: false,
       form: {
+        respassword:"",
         username: "",
         password: "",
         unit: "",
         department: "",
         name: "",
         id_number: "",
-        accessory: "",
-        phone: ""
+        // accessory: "",
+        phone: "",
+        fImgUrl:"",
+        furl : "",
+        reg_code:""
       },
-      respassword: "",
       fileList2: [],
-      reg_code: "",
+      // reg_code: "",
       subSys: "",
       // 验证码
       FirstCode: "",
@@ -341,10 +396,184 @@ export default {
       phoLog : {
         phone : '',
         code : ''
-      }
+      },
+      // 校验
+      rules: {
+        username: [
+          { required: true, message: '用户名必填', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符之间', trigger: 'blur' }
+        ],
+        password: [
+          {validator: validatePass, trigger: 'blur'},
+          { min: 6, message: '长度至少6位', trigger: 'blur' },
+          {required: true, message: '请再次输入密码', trigger: 'blur'},
+        ],
+        respassword: [
+          {validator: validatePass2, trigger: 'blur'},
+          { min: 6, message: '长度至少6位', trigger: 'blur' },
+          {required: true, message: '请再次输入密码', trigger: 'blur'},
+        ],
+        unit:[
+          { required: true, message: '所属单位必填', trigger: 'change' },
+        ],
+        name:[
+          { required: true, message: '姓名必填', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符之间', trigger: 'blur' }
+        ],
+        phone:[
+          { required: true, message: '手机号必填', trigger: 'blur' },
+          { validator: checkPhone, trigger: 'blur' },
+        ],
+        /*reg_code:[
+          { required: true, message: '验证码必填', trigger: 'blur' }
+        ],*/
+        id_number:[
+          { validator: idCord, trigger: 'blur' },
+        ],
+      },
+      OrgOpt:[]
     };
   },
   methods: {
+
+    // 上传图片地址
+    uploadUrlImg(){
+      return config.loginURL + '/mult/png';
+    },
+    // 新增图片上传
+    succImgAdd(response, file, fileList) {
+      console.log(response);
+      let fileName = file.name;
+      let regex = /(.jpg|.jpeg|.gif|.png|.bmp)$/;
+      if (regex.test(fileName.toLowerCase())) {
+        this.form.furl = response.data.revealImage;
+        this.form.fImgUrl = URL.createObjectURL(file.raw);
+      } else {
+        this.$message.error('请选择图片文件');
+      }
+    },
+    // 归属机构
+    getAffiliate() {
+      let params = {};
+      API.get(config.loginURL + '/user/findMechanismAndRole', params).then((res) => {
+        console.log(res.data)
+        if (res.data.code == 200) {
+          var arr = res.data.data.mechanismAll;
+          this.OrgOpt = arr;
+        }
+      })
+    },
+    // 点击注册按钮
+    Register(){
+      // this.codePhon2 = false;
+      // this.auth_timezc="";
+      this.dialogFormVisible = true;
+      this.getAffiliate();
+      this.form = {
+        respassword:"",
+        username: "",
+        password: "",
+        unit: "",
+        department: "",
+        name: "",
+        id_number: "",
+        phone: "",
+        fImgUrl:"",
+        furl : "",
+        reg_code:""
+      }
+      if (this.$refs.form) {
+        this.$refs.form.clearValidate();
+      } else {
+        return;
+      }
+    },
+    //注册
+    register(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log(this.form.furl)
+          if(!this.form.furl){
+            this.$message({
+              type: 'error',
+              message: '证件附件必须上传'
+            });
+          }else{
+            let params = {};
+            params["uName"] = this.form.username;
+            params["uPasswd"] = md5(this.form.username+this.form.password);
+            params["uMechanism"] = this.form.unit;
+            params["uDepartmentName"] = this.form.department;
+            params["uUsername"] = this.form.name;
+            params["uIdNumber"] = this.form.id_number;
+            params["uMobilephone"] = this.form.phone;
+            // params["code"] = this.form.reg_code;
+            params["uIdPhoto"] = this.form.furl;
+            console.log(params)
+            API.post(config.loginURL + '/user/create', params).then((res) => {
+              console.log(res.data)
+              if (res.data.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: "注册成功"
+                });
+                this.dialogFormVisible = false;
+              }else{
+                this.$message({
+                  type: 'error',
+                  message: res.data.message
+                });
+              }
+            })
+          }
+        }
+      })
+    },
+/*    // 注册验证码
+    Countdown3() {
+      if(this.form.phone == ''){
+        this.$message({
+          type: "error",
+          message: "请输入手机号!"
+        });
+      }else {
+        this.codePhon2 = true;
+        this.auth_timezc = 60;
+        var auth_timetimer = setInterval(() => {
+          this.auth_timezc--;
+          if (this.auth_timezc <= 0) {
+            this.auth_timezc = "";
+            this.codePhon2 = false;
+            clearInterval(auth_timetimer);
+          }
+        }, 1000);
+
+        let params = {};
+        // 验证码
+        params["phone"] = this.form.phone;
+        params["type"] = 2;
+        // console.log(params)
+        API.get(config.loginURL + "/code/verificationCode", params).then(res => {
+          // console.log(res.data)
+          if (res.data.code == 200) {
+            this.$message({
+              type: "success",
+              message: "验证码发送成功!"
+            });
+          }else {
+            this.$message({
+              type: "error",
+              message: res.data.message
+            });
+            clearInterval(auth_timetimer);
+            this.auth_timezc = "";
+            this.codePhon2 = false;
+          }
+        });
+      }
+    },*/
+
+
     // 新闻 动态 公告切换
     newsTab(id) {
       this.isActive = id;
@@ -738,13 +967,6 @@ export default {
           });
       }
     },
-    // 退出
-    quit() {
-      // this.loginShow = true;
-      this.userName = "";
-      this.passWord = "";
-      this.code = "";
-    },
     // 验证码
     validate() {
       //console.log(this.userName)
@@ -766,104 +988,7 @@ export default {
       }
     },
     // 注册验证码
-    register_validate() {
-      //console.log(this.form.phone)
-      let val = /^1[34578]\d{9}$/;
-      if (!val.test(this.form.phone)) {
-        this.$message({
-          type: "error",
-          message: "请输入正确的手机号!"
-        });
-      } else {
-        let params = {};
-        params["form.phone"] = this.form.phone;
-        API.get("static/news.json", params).then(res => {
-          if (res.status == 200) {
-          } else {
-            //console.log(res.data)
-          }
-        });
-      }
-    },
-    //注册
-    register() {
-      if (!this.form.username) {
-        this.$message({
-          type: "error",
-          message: "请输入用户名!"
-        });
-        return;
-      }
-      if (!this.form.password) {
-        this.$message({
-          type: "error",
-          message: "请输入密码!"
-        });
-        return;
-      } else {
-        if (this.form.password != this.respassword) {
-          this.$message({
-            type: "error",
-            message: "密码和重复密码不一致!"
-          });
-          return;
-        }
-      }
-      if (!this.form.unit) {
-        this.$message({
-          type: "error",
-          message: "请输入单位!"
-        });
-        return;
-      }
-      if (!this.form.department) {
-        this.$message({
-          type: "error",
-          message: "请输入部门!"
-        });
-        return;
-      }
-      if (!this.form.name) {
-        this.$message({
-          type: "error",
-          message: "请输入姓名!"
-        });
-        return;
-      }
-      if (!this.form.phone) {
-        this.$message({
-          type: "error",
-          message: "请输入手机号!"
-        });
-        return;
-      } else if (this.form.phone) {
-        let val = /^1[34578]\d{9}$/;
-        if (!val.test(this.form.phone)) {
-          this.$message({
-            type: "error",
-            message: "请输入正确的手机号!"
-          });
-          return;
-        }
-      }
-      if (!this.reg_code) {
-        this.$message({
-          type: "error",
-          message: "请输入验证码!"
-        });
-        return;
-      }
-      this.dialogFormVisible = false;
-      this.form.name = "";
-      this.form.unit = "";
-      this.form.password = "";
-      this.form.phone = "";
-      this.form.department = "";
-      this.form.id_number = "";
-      this.form.accessory = "";
-      this.form.username = "";
-      this.reg_code = "";
-    },
+
     cancel() {
       this.dialogFormVisible = false;
       this.form.name = "";
@@ -876,22 +1001,8 @@ export default {
       this.form.username = "";
       this.reg_code = "";
     },
-    handleRemove(file, fileList) {
-      //console.log(file, fileList);
-    },
-    handlePreview(file) {
-      //console.log(file);
-    },
-    //验证密码是否一致
-    verify_pas() {
-      if (this.form.password != this.respassword) {
-        this.$message({
-          type: "error",
-          message: "密码和重复密码不一致!"
-        });
-        return;
-      }
-    },
+
+
     //查询子系统菜单ID
     getIndexMenu() {
       API.get(config.loginURL + "/menu/showListByid", { id: 3 })
@@ -929,6 +1040,42 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+  .sel-Org .el-form-item__error {
+    left: 120px;
+  }
+  .sel-Org .el-form-item__content {
+    margin-left: 4% !important;
+    width: 80%;
+  }
+  .sel-Org .el-form-item__content .el-select {
+    width: 80%;
+  }
+  .avatar-uploader {
+    float: left;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 .el-dialog__footer {
   padding: 30px 20px 20px;
 }
@@ -1001,7 +1148,7 @@ export default {
     display: block;
     height: 40px;
     background: #409eff;
-    width: 80px;
+    /*width: 80px;*/
     float: left;
     color: #fff;
     text-align: center;
