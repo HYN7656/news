@@ -50,7 +50,7 @@
             <el-radio label="1">飞机</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="车次/航班号：" :label-width="formLabelWidth">
+        <el-form-item label="车次/航班号：" :label-width="formLabelWidth" prop="sTrain">
           <el-input v-model="form.sTrain" autocomplete="off" placeholder="请填写车次/航班号"></el-input>
         </el-form-item>
         <el-form-item label="时间：" :label-width="formLabelWidth">
@@ -84,6 +84,16 @@
             return callback(new Error('请输入正确的手机号'));
           }
         };
+        var validate = (rule, value, callback) => {
+          const reg = /^[0-9a-zA-Z]*$/g;
+          if (value === '') {
+            callback();
+          } else if(reg.test(value)){
+            callback();
+          } else {
+            return callback(new Error('只能为字母和数字'));
+          }
+        };
         return{
           datail:{},
           formVis : true,
@@ -108,23 +118,29 @@
           // pDuty: '',
           rules: {
             sPeopleName: [
-              {required: true, message: '参会人姓名必填', trigger: 'blur'},
+              {required: true, message: '参会人姓名必填', trigger: 'change'},
+              {min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change'}
             ],
             sUnit: [
-              {required: true, message: '所属单位必填', trigger: 'blur'},
+              {required: true, message: '所属单位必填', trigger: 'change'},
+              {min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change'}
             ],
             sMobile: [
-              {required: true, message: '联系方式必填', trigger: 'blur'},
-              { validator: checkPhone, trigger: 'blur' },
+              {required: true, message: '联系方式必填', trigger: 'change'},
+              { validator: checkPhone, trigger: 'change' },
             ],
             sTime: [
-              {required: true, message: '到会日期必填', trigger: 'blur'},
+              {required: true, message: '到会日期必填', trigger: 'change'},
             ],
             sHalf: [
-              {required: true, message: '到会时间必填', trigger: 'blur'},
+              {required: true, message: '到会时间必填', trigger: 'change'},
             ],
             pDuty: [
-              {required: true, message: '职位必填', trigger: 'blur'},
+              {required: true, message: '职位必填', trigger: 'change'},
+              {min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change'}
+            ],
+            sTrain : [
+              {min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change'},
             ],
 
           }
@@ -167,17 +183,18 @@
               params['pTrainTime'] = this.form.sTrainTime;
               params['pMeetingId'] = this.mId;
               console.log(params);
-              API.post('/signup/create', params).then((res) => {
-                // console.log(res.data);
+              API.post('/meetingPeople/addMetPeople', params).then((res) => {
+                console.log(res.data);
                 if (res.data.code == 200) {
                     this.$message({
                       type: 'success',
                       message: '提交成功!'
                     });
+                  this.$router.push({name: 'sign.detail', query: {id: this.mId}});
                 } else {
                   this.$message({
                     type: 'error',
-                    message: '提交失败!'
+                    message: '提交失败!'+res.data.message
                   });
                 }
               });

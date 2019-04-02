@@ -19,8 +19,8 @@
               <i class="newsts" v-show="dynamicS"></i>
             </div>-->
             <div class="item newst" :class="{active:isActive == 3}" @click="newsTab(3)">
-              公告
-              <i class="newsts" v-show="noticeS"></i>
+              最新动态
+              <i class="newsts" v-show="noticeS" style="left: 95px"></i>
             </div>
           </div>
           <div class="more" @click="newsList()">查看更多</div>
@@ -188,7 +188,7 @@
         <!--<el-form-item label="验证码： " prop="reg_code">
           <el-input v-model="form.reg_code" autocomplete="off" placeholder="短信验证" style="width: 30%"></el-input>
         </el-form-item>-->
-        <el-form-item label="证件附件：">
+        <el-form-item label="证件附件：" prop="fImgUrl">
           <el-upload
             class="avatar-uploader"
             :action="uploadUrlImg()"
@@ -405,12 +405,12 @@ export default {
         ],
         password: [
           {validator: validatePass, trigger: 'blur'},
-          { min: 6, message: '长度至少6位', trigger: 'blur' },
+          { min: 6,max:30, message: '长度在 6 到 30 个字符之间', trigger: 'blur' },
           {required: true, message: '请再次输入密码', trigger: 'blur'},
         ],
         respassword: [
           {validator: validatePass2, trigger: 'blur'},
-          { min: 6, message: '长度至少6位', trigger: 'blur' },
+          { min: 6,max:30, message: '长度在 6 到 30 个字符之间', trigger: 'blur' },
           {required: true, message: '请再次输入密码', trigger: 'blur'},
         ],
         unit:[
@@ -430,6 +430,9 @@ export default {
         id_number:[
           { validator: idCord, trigger: 'blur' },
         ],
+        fImgUrl:[
+          { required: true, message: '证件照必传', trigger: 'blur' },
+        ]
       },
       OrgOpt:[]
     };
@@ -650,7 +653,7 @@ export default {
       });
     },
     getNoticeList() {
-      //公告
+      //动态
       let params = {};
       var arr = [];
       var num = 0;
