@@ -64,7 +64,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="save('form')" class="confirm">提 交</el-button>
+        <el-button type="primary" @click="save('form')" class="confirm" :loading='loadingBtn'>提 交</el-button>
       </div>
 
   </div>
@@ -95,6 +95,7 @@
           }
         };
         return{
+          loadingBtn:false,
           datail:{},
           formVis : true,
           formLabelWidth : '',
@@ -142,8 +143,8 @@
             sTrain : [
               {min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change'},
             ],
-
-          }
+          },
+          num : 0,
         }
       },
       methods:{
@@ -154,9 +155,11 @@
         },
         openPick1(){
           this.$refs.picker1.open();
+          document.activeElement.blur();
         },
         openPick2(){
           this.$refs.picker2.open();
+          document.activeElement.blur();
         },
         handleConfirm1 (data) {
           let date = moment(data).format('YYYY-MM-DD');
@@ -169,35 +172,44 @@
         save(formName){
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              let params = {};
-              // params['sForm'] = this.form.sForm;
-              params['pName'] = this.sName;
-              params['pPeopleName'] = this.form.sPeopleName;
-              params['pUnit'] = this.form.sUnit;
-              params['pDuty'] = this.form.pDuty;
-              params['pMobile'] = this.form.sMobile;
-              params['pTime'] = this.form.sTime;
-              params['pHalf'] = this.form.sHalf;
-              params['pVehicle'] = this.form.sVehicle;
-              params['pTrain'] = this.form.sTrain;
-              params['pTrainTime'] = this.form.sTrainTime;
-              params['pMeetingId'] = this.mId;
-              console.log(params);
-              API.post('/meetingPeople/addMetPeople', params).then((res) => {
-                console.log(res.data);
-                if (res.data.code == 200) {
+              this.num ++;
+              if(this.num == 1){
+                this.loadingBtn = true;
+                let params = {};
+                // params['sForm'] = this.form.sForm;
+                params['pName'] = this.sName;
+                params['pPeopleName'] = this.form.sPeopleName;
+                params['pUnit'] = this.form.sUnit;
+                params['pDuty'] = this.form.pDuty;
+                params['pMobile'] = this.form.sMobile;
+                params['pTime'] = this.form.sTime;
+                params['pHalf'] = this.form.sHalf;
+                params['pVehicle'] = this.form.sVehicle;
+                params['pTrain'] = this.form.sTrain;
+                params['pTrainTime'] = this.form.sTrainTime;
+                params['pMeetingId'] = this.mId;
+                console.log(params);
+                API.post('/meetingPeople/addMetPeople', params).then((res) => {
+                  console.log(res.data);
+                  if (res.data.code == 200) {
                     this.$message({
                       type: 'success',
                       message: '提交成功!'
                     });
-                  this.$router.push({name: 'sign.detail', query: {id: this.mId}});
-                } else {
-                  this.$message({
-                    type: 'error',
-                    message: '提交失败!'+res.data.message
-                  });
-                }
-              });
+                    this.loadingBtn = false;
+                    this.$router.push({name: 'sign.detail', query: {id: this.mId}});
+                  } else {
+                    this.$message({
+                      type: 'error',
+                      message: '提交失败!'+res.data.message
+                    });
+                    this.loadingBtn = false;
+                  }
+                });
+              }else {
+                return;
+              }
+
             }
           })
         },
