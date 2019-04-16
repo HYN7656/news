@@ -1,5 +1,5 @@
 <template>
-  <div class="list" v-bind:style="{ minHeight: offHeight + 'px' }">
+  <div class="list" v-bind:style="{ minHeight: offHeight + 'px',overflow:'hidden'}">
     <br/><br/>
     <div class="contain">
       <div style="float: left;width: 230px;">
