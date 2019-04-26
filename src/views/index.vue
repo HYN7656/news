@@ -800,7 +800,8 @@ export default {
       // 验证码
       params["userId"] = this.IdNum;
       params["type"] = 2;
-      //console.log(params)
+      params["MenuId"] = this.subSys;
+      console.log(params)
       API.get(config.loginURL + "/code/userVerificationCode", params).then(res => {
         // console.log(res.data)
         if (res.data.code == 200) {
