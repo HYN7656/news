@@ -868,6 +868,9 @@ export default {
         });
       }else {
         this.PhoneDiaLogin = true;
+        this.phoLog.phone = '';
+        this.auth_time1 = '';
+        this.codePhon1 = false;
       }
     },
     // 手机验证码登录获取验证码、倒计时
@@ -893,8 +896,9 @@ export default {
         // 验证码
         params["phone"] = this.phoLog.phone;
         params["type"] = 2;
+        params["MenuId"] = this.subSys;
         // console.log(params)
-        API.get(config.loginURL + "/code/verificationCode", params).then(res => {
+        API.get(config.loginURL + "/code/userVerificationCode", params).then(res => {
           // console.log(res.data)
           if (res.data.code == 200) {
             this.$message({
@@ -963,6 +967,11 @@ export default {
               this.phoneNum = res.data.data.uMobilephone;
               this.IdNum = res.data.data.id;
             }else if(res.data.code == 10021){
+              this.$message({
+                type: "error",
+                message: res.data.message
+              });
+            }else {
               this.$message({
                 type: "error",
                 message: res.data.message
